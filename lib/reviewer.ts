@@ -1,6 +1,52 @@
-import { Reviewer, PRDDocument, ReviewResult, Review, ReviewComment } from './types';
+import { Reviewer, PRDDocument, ReviewResult, Review } from './types';
 import { generateUUID } from './utils';
-import { REVIEWERS } from './constants';
+import { REVIEWERS, CLAUDE_MODEL } from './constants';
+
+/**
+ * LLM 返回的原始评论结构(用于验证)
+ */
+interface RawLLMComment {
+  paragraphId: unknown;
+  quotedText: unknown;
+  type: unknown;
+  content: unknown;
+  severity: unknown;
+}
+
+/**
+ * 验证 LLM 返回的评论字段
+ */
+function isValidComment(c: unknown): c is RawLLMComment {
+  if (!c || typeof c !== 'object') return false;
+  const comment = c as Record<string, unknown>;
+
+  // 验证 paragraphId 是数字
+  if (typeof comment.paragraphId !== 'number' || !Number.isInteger(comment.paragraphId)) {
+    return false;
+  }
+
+  // 验证 type 是四个允许值之一
+  const validTypes = ['question', 'suggestion', 'concern', 'praise'];
+  if (typeof comment.type !== 'string' || !validTypes.includes(comment.type)) {
+    return false;
+  }
+
+  // 验证 severity 是三个允许值之一
+  const validSeverities = ['high', 'medium', 'low'];
+  if (typeof comment.severity !== 'string' || !validSeverities.includes(comment.severity)) {
+    return false;
+  }
+
+  // 验证 quotedText 和 content 是非空字符串
+  if (typeof comment.quotedText !== 'string' || comment.quotedText.trim() === '') {
+    return false;
+  }
+  if (typeof comment.content !== 'string' || comment.content.trim() === '') {
+    return false;
+  }
+
+  return true;
+}
 
 /**
  * 为评委生成评审 prompt
@@ -68,6 +114,11 @@ export async function reviewPRD(
   apiKey: string,
   onProgress: (current: number, total: number) => void
 ): Promise<ReviewResult> {
+  // 验证 API key
+  if (!apiKey?.trim()) {
+    throw new Error('API key is required');
+  }
+
   const reviews: Review[] = [];
 
   for (let i = 0; i < REVIEWERS.length; i++) {
@@ -84,7 +135,7 @@ export async function reviewPRD(
           'content-type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: CLAUDE_MODEL,
           max_tokens: 2000,
           messages: [{ role: 'user', content: prompt }]
         })
@@ -95,7 +146,14 @@ export async function reviewPRD(
       }
 
       const data = await response.json();
-      const content = data.content[0].text;
+
+      // 防御性检查 API 响应结构
+      const text = data?.content?.[0]?.text;
+      if (!text) {
+        console.error(`评委 ${reviewer.name} API 响应格式错误: 缺少 content[0].text`);
+        continue;
+      }
+      const content = text;
 
       // 解析 JSON(支持多种格式)
       const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) ||
@@ -117,19 +175,36 @@ export async function reviewPRD(
         continue;
       }
 
+      // 过滤并验证每个评论
+      const validComments = parsedComments.comments
+        .filter((c: unknown) => {
+          if (!isValidComment(c)) {
+            console.warn(`评委 ${reviewer.name} 的一条评论格式错误,已跳过:`, c);
+            return false;
+          }
+          return true;
+        })
+        .map((c: RawLLMComment) => ({
+          id: generateUUID(),
+          paragraphId: c.paragraphId as number,
+          quotedText: c.quotedText as string,
+          type: c.type as 'question' | 'suggestion' | 'concern' | 'praise',
+          content: c.content as string,
+          severity: c.severity as 'high' | 'medium' | 'low'
+        }));
+
+      // 如果没有有效评论,跳过该评委
+      if (validComments.length === 0) {
+        console.error(`评委 ${reviewer.name} 没有返回有效评论`);
+        continue;
+      }
+
       reviews.push({
         reviewerId: reviewer.id,
         reviewerName: reviewer.name,
         icon: reviewer.icon,
         color: reviewer.color,
-        comments: parsedComments.comments.map((c: any) => ({
-          id: generateUUID(),
-          paragraphId: c.paragraphId,
-          quotedText: c.quotedText,
-          type: c.type,
-          content: c.content,
-          severity: c.severity
-        })),
+        comments: validComments,
         timestamp: new Date()
       });
 
