@@ -9,7 +9,7 @@ export default function ReviewProgress() {
   if (!progress) return null;
 
   const { current, total } = progress;
-  const percentage = Math.round((current / total) * 100);
+  const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
 
   return (
     <div className="max-w-2xl mx-auto mt-8">

@@ -16,18 +16,13 @@ export default function DocumentUploader() {
     setIsUploading(true);
 
     try {
-      // Validate file size
-      if (file.size > MAX_FILE_SIZE) {
-        throw new Error(`文件过大，最大支持 ${MAX_FILE_SIZE / 1024 / 1024}MB`);
-      }
-
       // Validate file format
       const ext = '.' + file.name.split('.').pop()?.toLowerCase();
       if (!SUPPORTED_FORMATS.includes(ext)) {
         throw new Error(`不支持的文件格式，仅支持：${SUPPORTED_FORMATS.join(', ')}`);
       }
 
-      // Parse document
+      // Parse document (file size validation happens in parser)
       const doc = await parseDocument(file);
       setDocument(doc);
 
@@ -49,6 +44,8 @@ export default function DocumentUploader() {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFile(file);
+    // Reset input to allow re-selecting the same file
+    e.target.value = '';
   };
 
   return (
@@ -90,7 +87,10 @@ export default function DocumentUploader() {
       </div>
 
       {error && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+        <div
+          role="alert"
+          className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+        >
           ❌ {error}
         </div>
       )}
