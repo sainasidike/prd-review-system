@@ -27,11 +27,11 @@ export interface Review {
   reviewerName: string;
   icon: string;
   color: string;
-  comments: Comment[];
+  comments: ReviewComment[];
   timestamp: Date;
 }
 
-export interface Comment {
+export interface ReviewComment {
   id: string;
   paragraphId: number;
   quotedText: string;
