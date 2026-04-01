@@ -48,3 +48,8 @@ export interface Reviewer {
   focusAreas: string[];
   description: string;
 }
+
+export interface ReviewProgress {
+  current: number;
+  total: number;
+}

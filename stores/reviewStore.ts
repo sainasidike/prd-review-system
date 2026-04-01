@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { PRDDocument, ReviewResult } from '@/lib/types';
+import { PRDDocument, ReviewResult, ReviewProgress } from '@/lib/types';
 
 interface ReviewState {
   // Current document
@@ -11,8 +11,8 @@ interface ReviewState {
   setReviewResult: (result: ReviewResult | null) => void;
 
   // Review progress
-  reviewProgress: { current: number; total: number } | null;
-  setReviewProgress: (progress: { current: number; total: number } | null) => void;
+  reviewProgress: ReviewProgress | null;
+  setReviewProgress: (progress: ReviewProgress | null) => void;
 
   // API Key
   apiKey: string;
@@ -24,7 +24,7 @@ interface ReviewState {
   highlightedParagraphId: number | null;
   setHighlightedParagraphId: (id: number | null) => void;
 
-  // Reset
+  // Reset all state except apiKey (preserve user's API key for convenience)
   reset: () => void;
 }
 
