@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PRD 智能评审系统
 
-## Getting Started
+AI 驱动的产品需求文档（PRD）多角度评审工具
 
-First, run the development server:
+## 🎯 项目简介
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+上传 PRD 文档后，AI 自动扮演 6 位不同团队 Leader 进行专业评审：
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **评委 1：运营团队 Leader** - 关注市场推广、用户增长、运营策略
+- **评委 2：品牌团队 Leader** - 关注品牌定位、用户体验、视觉呈现
+- **评委 3：技术团队 Leader** - 关注技术可行性、架构设计、性能优化
+- **评委 4：产品团队 Leader** - 关注产品逻辑、功能完整性、用户价值
+- **评委 5：交互团队 Leader** - 关注交互设计、用户流程、可用性
+- **评委 6：BI 团队 Leader** - 关注数据埋点、指标设计、分析维度
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ 核心功能
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 📄 上传 PRD 文档（支持 PDF、Word、Markdown 等格式）
+- 🤖 AI 智能分析文档内容
+- 👥 6 位虚拟评委多角度评审
+- 💬 针对性评论、提问和改进建议
+- 📊 生成评审报告
 
-## Learn More
+## 🚀 技术栈
 
-To learn more about Next.js, take a look at the following resources:
+待定（头脑风暴中...）
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📦 安装和使用
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+待定
 
-## Deploy on Vercel
+## 🤝 贡献
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+欢迎提交 Issue 和 Pull Request！
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 开源协议
+
+MIT License
