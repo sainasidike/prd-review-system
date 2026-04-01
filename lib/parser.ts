@@ -3,8 +3,14 @@ import mammoth from 'mammoth';
 import { PRDDocument } from './types';
 import { generateUUID, extractTitle } from './utils';
 import { segmentPRD } from './segmenter';
+import { MAX_FILE_SIZE } from './constants';
 
 export async function parseDocument(file: File): Promise<PRDDocument> {
+  // Validate file size
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(`文件过大，最大支持 ${MAX_FILE_SIZE / 1024 / 1024}MB`);
+  }
+
   const ext = file.name.split('.').pop()?.toLowerCase();
 
   let content: string;
@@ -49,7 +55,7 @@ export async function parseText(file: File): Promise<string> {
 
 export async function parsePDF(file: File): Promise<string> {
   // Set worker source
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.mjs`;
 
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
