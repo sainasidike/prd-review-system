@@ -83,9 +83,8 @@ export default function ReviewPage() {
         <mark
           key={`h${i}`}
           className={`cursor-pointer rounded-sm px-0.5 transition-all duration-150 ${
-            active ? 'bg-amber-200' : 'bg-amber-100/80 hover:bg-amber-200'
+            active ? 'bg-amber-200' : 'bg-amber-100/70 hover:bg-amber-200'
           }`}
-          style={{ borderBottom: `2px solid ${h.color}` }}
           onClick={() => setActiveCommentId(active ? null : h.id)}
         >
           {content.slice(h.start, h.end)}
@@ -97,7 +96,7 @@ export default function ReviewPage() {
     return <>{parts}</>;
   }
 
-  function renderParagraph(p: { id: number; type: string; content: string; level?: number }) {
+  function renderParagraphContent(p: { id: number; type: string; content: string; level?: number }) {
     if (p.type === 'heading') {
       const level = p.level || 1;
       const cls: Record<number, string> = {
@@ -163,7 +162,7 @@ export default function ReviewPage() {
                 } : {}}
               >
                 <ReviewerAvatar reviewerId={reviewer.id} size={18} />
-                <span>{reviewer.name.replace(' Leader', '').replace('团队 ', '')}</span>
+                <span>{reviewer.name.replace(' Leader', '').replace('· ', '')}</span>
                 {count > 0 && <span className="text-[10px] text-gray-300">{count}</span>}
               </button>
             );
@@ -171,85 +170,57 @@ export default function ReviewPage() {
         </div>
       </header>
 
-      {/* Main: Document left + Comments right */}
-      <div className="flex-1 overflow-auto scroll-y">
-        <div className="max-w-6xl mx-auto flex gap-0 py-8 px-6">
+      {/* Main content */}
+      <div className="flex-1 overflow-auto">
+        <div className="max-w-6xl mx-auto py-8 px-6">
+          {document.paragraphs.map(p => {
+            const comments = commentsByParagraph.get(p.id);
+            const hasComments = comments && comments.length > 0;
 
-          {/* Left: Document */}
-          <div className="flex-1 min-w-0 pr-8 border-r border-gray-100">
-            <div className="max-w-[640px]">
-              {document.paragraphs.map(p => (
-                <div key={p.id} id={`p-${p.id}`}>
-                  {renderParagraph(p)}
+            return (
+              <div key={p.id} className="relative flex" id={`p-${p.id}`}>
+                {/* Left: Document content */}
+                <div className="flex-1 max-w-[680px]">
+                  {renderParagraphContent(p)}
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Right: Comment rail */}
-          <div className="w-[340px] shrink-0 pl-6">
-            {document.paragraphs.map(p => {
-              const comments = commentsByParagraph.get(p.id);
-              if (!comments || comments.length === 0) return null;
+                {/* Right: Comments aligned with paragraph */}
+                {hasComments && (
+                  <div className="w-[300px] shrink-0 pl-8 pt-1">
+                    {comments.map(comment => {
+                      const isActive = activeCommentId === comment.id;
 
-              return (
-                <div key={p.id} className="mb-4">
-                  {comments.map(comment => {
-                    const isActive = activeCommentId === comment.id;
-                    const severityDot = {
-                      high: 'bg-red-500',
-                      medium: 'bg-amber-400',
-                      low: 'bg-emerald-400',
-                    }[comment.severity];
-
-                    return (
-                      <div
-                        key={comment.id}
-                        className={`mb-2 rounded-lg border p-3 cursor-pointer transition-all duration-200 ${
-                          isActive
-                            ? 'bg-white border-gray-200 shadow-md ring-1 ring-amber-200'
-                            : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm'
-                        }`}
-                        onClick={() => setActiveCommentId(isActive ? null : comment.id)}
-                        onMouseEnter={() => {
-                          // Scroll to and highlight the paragraph
-                          const el = window.document.getElementById(`p-${comment.paragraphId}`);
-                          if (el) el.classList.add('bg-amber-50/50');
-                        }}
-                        onMouseLeave={() => {
-                          const el = window.document.getElementById(`p-${comment.paragraphId}`);
-                          if (el) el.classList.remove('bg-amber-50/50');
-                        }}
-                      >
-                        {/* Comment header */}
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <ReviewerAvatar reviewerId={comment.reviewerId} size={22} />
-                          <span className="text-xs font-medium" style={{ color: comment.color }}>
-                            {comment.reviewerName}
-                          </span>
-                          <div className="flex-1" />
-                          <span className={`w-1.5 h-1.5 rounded-full ${severityDot}`} />
-                        </div>
-
-                        {/* Quoted text */}
+                      return (
                         <div
-                          className="mb-2 px-2 py-1 rounded bg-gray-50 border-l-2 text-xs text-gray-400 italic"
-                          style={{ borderColor: `${comment.color}50` }}
+                          key={comment.id}
+                          className={`mb-3 rounded-lg border p-3 cursor-pointer transition-all duration-200 ${
+                            isActive
+                              ? 'bg-white border-gray-200 shadow-md'
+                              : 'bg-white border-gray-100 hover:border-gray-200 hover:shadow-sm'
+                          }`}
+                          onClick={() => setActiveCommentId(isActive ? null : comment.id)}
                         >
-                          &ldquo;{comment.quotedText}&rdquo;
-                        </div>
+                          {/* Header: avatar + name + time */}
+                          <div className="flex items-center gap-2 mb-2">
+                            <ReviewerAvatar reviewerId={comment.reviewerId} size={24} />
+                            <span className="text-sm font-medium text-gray-800">
+                              {comment.reviewerName.split('·')[0].trim()}
+                            </span>
+                            <span className="text-xs text-gray-300">刚刚</span>
+                          </div>
 
-                        {/* Comment body */}
-                        <p className="text-[13px] text-gray-600 leading-relaxed">
-                          {comment.content}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </div>
+                          {/* Comment body */}
+                          <p className="text-[13px] text-gray-600 leading-relaxed">
+                            {comment.content}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
