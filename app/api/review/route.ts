@@ -115,12 +115,14 @@ function parseGeminiResponse(data: any): any {
       throw new Error('Gemini 响应格式错误：缺少文本内容');
     }
 
-    // 尝试多种 JSON 提取方式
-    const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) ||
-                      text.match(/```\n([\s\S]*?)\n```/) ||
-                      [null, text];
+    // 尝试多种 JSON 提取方式（更宽松的匹配）
+    let jsonText = text;
 
-    const jsonText = jsonMatch[1] || text;
+    // 移除 markdown 代码块标记（各种可能的格式）
+    jsonText = jsonText.replace(/```json\s*/g, '');
+    jsonText = jsonText.replace(/```\s*/g, '');
+    jsonText = jsonText.trim();
+
     console.log('提取的 JSON 文本:', jsonText.substring(0, 300));
 
     const parsed = JSON.parse(jsonText);
