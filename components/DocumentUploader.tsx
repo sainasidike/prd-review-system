@@ -44,7 +44,7 @@ export default function DocumentUploader() {
   return (
     <div className="max-w-2xl">
       <div
-        className={`relative border rounded-2xl p-12 text-center transition-all duration-300 ${
+        className={`relative border rounded-2xl p-8 text-center transition-all duration-300 ${
           isDragging
             ? 'border-warm-400/50 bg-warm-400/[0.04] scale-[1.01]'
             : 'border-surface-3 bg-surface-1/50 hover:border-surface-4 hover:bg-surface-1'
@@ -59,13 +59,13 @@ export default function DocumentUploader() {
         <div className="absolute bottom-0 left-0 w-6 h-6 border-b border-l border-warm-400/20 rounded-bl-2xl" />
         <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-warm-400/20 rounded-br-2xl" />
 
-        <div className="space-y-5">
-          <div className={`mx-auto w-14 h-14 rounded-2xl flex items-center justify-center border transition-colors duration-300 ${
+        <div className="space-y-3">
+          <div className={`mx-auto w-10 h-10 rounded-xl flex items-center justify-center border transition-colors duration-300 ${
             isDragging
               ? 'bg-warm-400/10 border-warm-400/30'
               : 'bg-surface-2 border-surface-3'
           }`}>
-            <svg className={`w-6 h-6 transition-colors ${isDragging ? 'text-warm-400' : 'text-warm-300/30'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <svg className={`w-5 h-5 transition-colors ${isDragging ? 'text-warm-400' : 'text-warm-300/30'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
           </div>
