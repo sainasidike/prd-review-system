@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useReviewStore } from '@/stores/reviewStore';
 import { REVIEWERS } from '@/lib/constants';
@@ -21,7 +21,6 @@ export default function ReviewPage() {
   const toggleReviewer = useReviewStore(state => state.toggleReviewer);
   const reset = useReviewStore(state => state.reset);
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
-  const [hoveredParagraph, setHoveredParagraph] = useState<number | null>(null);
 
   useEffect(() => {
     if (!document || !reviewResult) {
@@ -33,14 +32,11 @@ export default function ReviewPage() {
     ? (reviewResult?.reviews.filter(r => selectedReviewers.includes(r.reviewerId)) ?? [])
     : (reviewResult?.reviews ?? []);
 
-  const commentsByParagraph = useMemo(() => {
-    const map = new Map<number, EnrichedComment[]>();
+  const allComments = useMemo(() => {
+    const list: EnrichedComment[] = [];
     filteredReviews.forEach(review => {
       review.comments.forEach(comment => {
-        if (!map.has(comment.paragraphId)) {
-          map.set(comment.paragraphId, []);
-        }
-        map.get(comment.paragraphId)!.push({
+        list.push({
           ...comment,
           reviewerId: review.reviewerId,
           reviewerName: review.reviewerName,
@@ -48,14 +44,25 @@ export default function ReviewPage() {
         });
       });
     });
-    return map;
+    return list;
   }, [filteredReviews]);
+
+  const commentsByParagraph = useMemo(() => {
+    const map = new Map<number, EnrichedComment[]>();
+    allComments.forEach(comment => {
+      if (!map.has(comment.paragraphId)) {
+        map.set(comment.paragraphId, []);
+      }
+      map.get(comment.paragraphId)!.push(comment);
+    });
+    return map;
+  }, [allComments]);
 
   if (!document || !reviewResult) return null;
 
-  const totalComments = filteredReviews.reduce((sum, r) => sum + r.comments.length, 0);
+  const totalComments = allComments.length;
 
-  // Notion-style text highlighting
+  // Text highlighting
   function renderText(content: string, paragraphId: number) {
     const comments = commentsByParagraph.get(paragraphId);
     if (!comments || comments.length === 0) return <>{content}</>;
@@ -85,7 +92,10 @@ export default function ReviewPage() {
             borderColor: active ? h.color : '#D9730D',
             backgroundColor: active ? 'rgba(251, 236, 221, 0.5)' : 'rgba(251, 236, 221, 0.3)',
           }}
-          onClick={(e) => { e.stopPropagation(); setActiveCommentId(active ? null : h.id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveCommentId(active ? null : h.id);
+          }}
         >
           {content.slice(h.start, h.end)}
         </span>
@@ -100,12 +110,12 @@ export default function ReviewPage() {
     if (p.type === 'heading') {
       const level = p.level || 1;
       if (level === 1) {
-        return <div className="text-[30px] font-bold text-notion-fg mt-10 mb-1 leading-tight">{renderText(p.content, p.id)}</div>;
+        return <div className="text-[28px] font-bold text-notion-fg mt-10 mb-1 leading-tight">{renderText(p.content, p.id)}</div>;
       }
       if (level === 2) {
-        return <div className="text-[24px] font-semibold text-notion-fg mt-8 mb-1 leading-tight">{renderText(p.content, p.id)}</div>;
+        return <div className="text-[22px] font-semibold text-notion-fg mt-8 mb-1 leading-tight">{renderText(p.content, p.id)}</div>;
       }
-      return <div className="text-[20px] font-semibold text-notion-fg mt-6 mb-1 leading-tight">{renderText(p.content, p.id)}</div>;
+      return <div className="text-[18px] font-semibold text-notion-fg mt-6 mb-1 leading-tight">{renderText(p.content, p.id)}</div>;
     }
     if (p.type === 'list') {
       return (
@@ -118,7 +128,6 @@ export default function ReviewPage() {
     return <div className="text-notion-fg leading-[1.7]">{renderText(p.content, p.id)}</div>;
   }
 
-  // Notion reviewer color mapping
   const reviewerTagColor: Record<string, string> = {
     operation: 'bg-[#DBEDDB]',
     brand: 'bg-[#E8DEEE]',
@@ -128,126 +137,154 @@ export default function ReviewPage() {
     bi: 'bg-[#D3E5EF]',
   };
 
+  const severityLabel: Record<string, { text: string; color: string; bg: string }> = {
+    high: { text: '高优', color: '#EB5757', bg: '#FBE4E4' },
+    medium: { text: '中', color: '#D9730D', bg: '#FADEC9' },
+    low: { text: '低', color: '#0F7B6C', bg: '#DBEDDB' },
+  };
+
+  function scrollToParagraph(paragraphId: number) {
+    const el = window.document.getElementById(`p-${paragraphId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.style.backgroundColor = 'rgba(251, 236, 221, 0.4)';
+      setTimeout(() => { el.style.backgroundColor = ''; }, 1500);
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="h-screen flex flex-col bg-white">
       {/* Top bar */}
-      <div className="h-11 flex items-center px-3 border-b border-notion-border sticky top-0 bg-white/95 backdrop-blur-sm z-20">
+      <div className="h-11 flex items-center px-3 border-b border-notion-border shrink-0 bg-white z-20">
         <button
           onClick={() => { reset(); router.push('/'); }}
           className="btn-notion text-notion-fg-secondary text-[13px]"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
           返回
         </button>
-
         <div className="h-5 w-px bg-notion-border mx-1" />
-
-        <span className="text-[13px] text-notion-fg-secondary truncate max-w-xs px-2">
+        <span className="text-[13px] text-notion-fg-secondary truncate max-w-sm px-2">
           {document.title}
         </span>
-
         <div className="flex-1" />
-
-        <span className="text-xs text-notion-fg-muted mr-3">
+        <span className="text-xs text-notion-fg-muted">
           {totalComments} 条评论
         </span>
       </div>
 
-      {/* Filter bar */}
-      <div className="border-b border-notion-border sticky top-11 bg-white/95 backdrop-blur-sm z-10">
-        <div className="max-w-[960px] mx-auto px-6 h-10 flex items-center gap-1">
-          <span className="text-xs text-notion-fg-muted mr-2">筛选</span>
-          {REVIEWERS.map(reviewer => {
-            const isSelected = selectedReviewers.includes(reviewer.id);
-            const count = reviewResult.reviews.find(r => r.reviewerId === reviewer.id)?.comments.length || 0;
-            return (
-              <button
-                key={reviewer.id}
-                onClick={() => toggleReviewer(reviewer.id)}
-                className={`tag gap-1 cursor-pointer transition-opacity ${
-                  isSelected
-                    ? `${reviewerTagColor[reviewer.id]} opacity-100`
-                    : 'bg-notion-bg-hover text-notion-fg-secondary opacity-60 hover:opacity-100'
-                }`}
-              >
-                <ReviewerAvatar reviewerId={reviewer.id} size={13} />
-                {reviewer.name.split('·')[0].trim()}
-                {count > 0 && <span className="text-[10px] opacity-60">{count}</span>}
-              </button>
-            );
-          })}
+      {/* Main layout: left comments + right document */}
+      <div className="flex flex-1 overflow-hidden">
+
+        {/* Left panel: Comments */}
+        <div className="w-[360px] shrink-0 border-r border-notion-border flex flex-col bg-[#FBFBFA]">
+          {/* Filter */}
+          <div className="px-4 py-3 border-b border-notion-border">
+            <div className="text-xs text-notion-fg-muted mb-2">筛选评委</div>
+            <div className="flex flex-wrap gap-1">
+              {REVIEWERS.map(reviewer => {
+                const isSelected = selectedReviewers.includes(reviewer.id);
+                const count = reviewResult.reviews.find(r => r.reviewerId === reviewer.id)?.comments.length || 0;
+                return (
+                  <button
+                    key={reviewer.id}
+                    onClick={() => toggleReviewer(reviewer.id)}
+                    className={`tag gap-1 cursor-pointer transition-opacity ${
+                      isSelected
+                        ? `${reviewerTagColor[reviewer.id]} opacity-100`
+                        : 'bg-notion-bg-hover text-notion-fg-secondary opacity-50 hover:opacity-100'
+                    }`}
+                  >
+                    <ReviewerAvatar reviewerId={reviewer.id} size={13} />
+                    {reviewer.name.split('·')[0].trim()}
+                    {count > 0 && <span className="text-[10px] opacity-50">{count}</span>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Comment list */}
+          <div className="flex-1 overflow-y-auto px-3 py-2">
+            {allComments.length === 0 ? (
+              <div className="text-sm text-notion-fg-muted text-center mt-12">暂无评论</div>
+            ) : (
+              allComments.map(comment => {
+                const isActive = activeCommentId === comment.id;
+                const sev = severityLabel[comment.severity];
+                const paragraph = document.paragraphs.find(p => p.id === comment.paragraphId);
+
+                return (
+                  <div
+                    key={comment.id}
+                    className={`mb-1 p-3 rounded-md cursor-pointer transition-colors duration-100 ${
+                      isActive
+                        ? 'bg-white border border-notion-border'
+                        : 'hover:bg-notion-bg-hover border border-transparent'
+                    }`}
+                    onClick={() => {
+                      setActiveCommentId(isActive ? null : comment.id);
+                      scrollToParagraph(comment.paragraphId);
+                    }}
+                  >
+                    {/* Header */}
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <ReviewerAvatar reviewerId={comment.reviewerId} size={18} />
+                      <span className="text-[13px] font-medium text-notion-fg">
+                        {comment.reviewerName.split('·')[0].trim()}
+                      </span>
+                      <span className="text-[11px] text-notion-fg-muted">
+                        {comment.reviewerName.split('·')[1]?.trim()}
+                      </span>
+                      <div className="flex-1" />
+                      <span
+                        className="tag text-[10px]"
+                        style={{ backgroundColor: sev.bg, color: sev.color }}
+                      >
+                        {sev.text}
+                      </span>
+                    </div>
+
+                    {/* Quoted text */}
+                    {comment.quotedText && (
+                      <div
+                        className="text-[12px] text-notion-fg-muted mb-1.5 pl-2 border-l-2 leading-relaxed"
+                        style={{ borderColor: '#D9730D' }}
+                      >
+                        &ldquo;{comment.quotedText}&rdquo;
+                      </div>
+                    )}
+
+                    {/* Content */}
+                    <p className="text-[13px] text-notion-fg-secondary leading-relaxed">
+                      {comment.content}
+                    </p>
+
+                    {/* Paragraph reference */}
+                    {paragraph && (
+                      <div className="text-[11px] text-notion-fg-muted mt-1.5">
+                        段落 {comment.paragraphId}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Document content */}
-      <div className="max-w-[960px] mx-auto px-6 py-8">
-        {document.paragraphs.map(p => {
-          const comments = commentsByParagraph.get(p.id);
-          const hasComments = comments && comments.length > 0;
-          const commentCount = comments?.length || 0;
-          const isHovered = hoveredParagraph === p.id;
-          const hasActiveComment = comments?.some(c => c.id === activeCommentId);
-
-          return (
-            <div
-              key={p.id}
-              className="relative group flex"
-              id={`p-${p.id}`}
-              onMouseEnter={() => setHoveredParagraph(p.id)}
-              onMouseLeave={() => setHoveredParagraph(null)}
-            >
-              {/* Document text */}
-              <div className="flex-1 max-w-[680px] py-[3px]">
+        {/* Right: Document */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-[680px] mx-auto px-12 py-10">
+            {document.paragraphs.map(p => (
+              <div key={p.id} id={`p-${p.id}`} className="py-[2px] transition-colors duration-300">
                 {renderParagraph(p)}
               </div>
-
-              {/* Comment cards - shown when paragraph hovered or comment active */}
-              {hasComments && (
-                <div className={`w-[260px] shrink-0 pl-8 transition-opacity duration-150 ${
-                  isHovered || hasActiveComment ? 'opacity-100' : 'opacity-0'
-                }`}>
-                  {comments.map(comment => {
-                    const isActive = activeCommentId === comment.id;
-                    return (
-                      <div
-                        key={comment.id}
-                        className={`mb-2 rounded-md border p-3 cursor-pointer transition-all duration-100 ${
-                          isActive
-                            ? 'border-notion-border bg-white shadow-sm'
-                            : 'border-transparent bg-notion-bg-hover hover:border-notion-border'
-                        }`}
-                        onClick={() => setActiveCommentId(isActive ? null : comment.id)}
-                      >
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <ReviewerAvatar reviewerId={comment.reviewerId} size={18} />
-                          <span className="text-[13px] font-medium text-notion-fg">
-                            {comment.reviewerName.split('·')[0].trim()}
-                          </span>
-                          <span className="text-[11px] text-notion-fg-muted">刚刚</span>
-                        </div>
-                        <p className="text-[13px] text-notion-fg-secondary leading-relaxed">
-                          {comment.content}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Comment count indicator - always visible when has comments */}
-              {hasComments && !isHovered && !hasActiveComment && (
-                <div
-                  className="absolute top-1 flex items-center justify-center rounded-full text-white font-medium"
-                  style={{ right: 0, width: 20, height: 20, fontSize: 11, backgroundColor: '#D9730D' }}
-                >
-                  {commentCount}
-                </div>
-              )}
-            </div>
-          );
-        })}
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
