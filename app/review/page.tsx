@@ -62,7 +62,6 @@ export default function ReviewPage() {
 
   const totalComments = allComments.length;
 
-  // Text highlighting
   function renderText(content: string, paragraphId: number) {
     const comments = commentsByParagraph.get(paragraphId);
     if (!comments || comments.length === 0) return <>{content}</>;
@@ -175,11 +174,22 @@ export default function ReviewPage() {
         </span>
       </div>
 
-      {/* Main layout: left comments + right document */}
+      {/* Main layout: left document + right comments */}
       <div className="flex flex-1 overflow-hidden">
 
-        {/* Left panel: Comments */}
-        <div className="w-[360px] shrink-0 border-r border-notion-border flex flex-col bg-[#FBFBFA]">
+        {/* Left: Document */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-[680px] mx-auto px-12 py-10">
+            {document.paragraphs.map(p => (
+              <div key={p.id} id={`p-${p.id}`} className="py-[2px] transition-colors duration-300">
+                {renderParagraph(p)}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right panel: Comments */}
+        <div className="w-[380px] shrink-0 border-l border-notion-border flex flex-col bg-[#FBFBFA]">
           {/* Filter */}
           <div className="px-4 py-3 border-b border-notion-border">
             <div className="text-xs text-notion-fg-muted mb-2">筛选评委</div>
@@ -214,7 +224,6 @@ export default function ReviewPage() {
               allComments.map(comment => {
                 const isActive = activeCommentId === comment.id;
                 const sev = severityLabel[comment.severity];
-                const paragraph = document.paragraphs.find(p => p.id === comment.paragraphId);
 
                 return (
                   <div
@@ -261,28 +270,10 @@ export default function ReviewPage() {
                     <p className="text-[13px] text-notion-fg-secondary leading-relaxed">
                       {comment.content}
                     </p>
-
-                    {/* Paragraph reference */}
-                    {paragraph && (
-                      <div className="text-[11px] text-notion-fg-muted mt-1.5">
-                        段落 {comment.paragraphId}
-                      </div>
-                    )}
                   </div>
                 );
               })
             )}
-          </div>
-        </div>
-
-        {/* Right: Document */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-[680px] mx-auto px-12 py-10">
-            {document.paragraphs.map(p => (
-              <div key={p.id} id={`p-${p.id}`} className="py-[2px] transition-colors duration-300">
-                {renderParagraph(p)}
-              </div>
-            ))}
           </div>
         </div>
       </div>
