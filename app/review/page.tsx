@@ -31,47 +31,40 @@ export default function ReviewPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-sand-50">
+    <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-sand-200 px-6 py-3 shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span className="font-display font-semibold text-ink-700 text-sm">PRD Review</span>
-            <div className="h-4 w-px bg-sand-200" />
-            <div>
-              <h1 className="font-display font-medium text-ink-600 text-sm leading-tight">{document.title}</h1>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-xs text-ink-300">{reviewResult.reviews.length} 评委</span>
-                <span className="text-xs text-sand-300">·</span>
-                <span className="text-xs text-ink-300">{totalComments} 条评论</span>
-                {highCount > 0 && (
-                  <>
-                    <span className="text-xs text-sand-300">·</span>
-                    <span className="text-xs text-red-500 font-medium">{highCount} 高优</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-
+      <header className="bg-white border-b border-gray-100 px-5 h-12 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
           <button
             onClick={handleNewReview}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ink-400 border border-sand-200 rounded-lg hover:bg-sand-100 hover:text-ink-600 transition-colors"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            新建
+            <span className="text-xs">返回</span>
           </button>
+          <div className="h-4 w-px bg-gray-200" />
+          <h1 className="font-medium text-gray-800 text-sm truncate max-w-md">{document.title}</h1>
+        </div>
+
+        <div className="flex items-center gap-4 text-xs text-gray-400">
+          <span>{reviewResult.reviews.length} 位评委</span>
+          <span>{totalComments} 条评论</span>
+          {highCount > 0 && (
+            <span className="text-red-500 font-medium">{highCount} 个高优问题</span>
+          )}
         </div>
       </header>
 
-      {/* Dual-pane */}
+      {/* Dual pane */}
       <div className="flex-1 flex overflow-hidden">
-        <div className="w-[56%] border-r border-sand-200 overflow-auto scroll-thin bg-white">
+        {/* Left: PRD */}
+        <div className="w-[55%] border-r border-gray-100 overflow-auto scroll-y bg-white">
           <PRDViewer />
         </div>
-        <div className="w-[44%] overflow-auto scroll-thin bg-sand-50">
+        {/* Right: Comments */}
+        <div className="w-[45%] overflow-auto scroll-y bg-[#F7F8FA]">
           <CommentPanel />
         </div>
       </div>

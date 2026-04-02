@@ -2,56 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-
 body {
-  background: #FAFAF8;
-  color: #1a1a1a;
-  font-family: 'DM Sans', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #F7F8FA;
+  color: #1D2129;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Stagger animations */
+/* Stagger children */
 .stagger > * {
   opacity: 0;
-  animation: staggerFadeUp 0.6s ease-out forwards;
+  animation: staggerUp 0.45s ease-out forwards;
 }
-.stagger > *:nth-child(1) { animation-delay: 0.06s; }
-.stagger > *:nth-child(2) { animation-delay: 0.12s; }
-.stagger > *:nth-child(3) { animation-delay: 0.18s; }
-.stagger > *:nth-child(4) { animation-delay: 0.24s; }
-.stagger > *:nth-child(5) { animation-delay: 0.30s; }
-.stagger > *:nth-child(6) { animation-delay: 0.36s; }
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger > *:nth-child(4) { animation-delay: 0.16s; }
+.stagger > *:nth-child(5) { animation-delay: 0.20s; }
+.stagger > *:nth-child(6) { animation-delay: 0.24s; }
 
-@keyframes staggerFadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+@keyframes staggerUp {
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-up {
-  animation: fadeUp 0.7s ease-out forwards;
 }
 
 /* Scrollbar */
-.scroll-thin::-webkit-scrollbar { width: 5px; }
-.scroll-thin::-webkit-scrollbar-track { background: transparent; }
-.scroll-thin::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 4px; }
-.scroll-thin::-webkit-scrollbar-thumb:hover { background: #ccc; }
-
-/* Button hover lift */
-.btn-lift {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.btn-lift:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-}
+.scroll-y::-webkit-scrollbar { width: 6px; }
+.scroll-y::-webkit-scrollbar-track { background: transparent; }
+.scroll-y::-webkit-scrollbar-thumb { background: #E5E6EB; border-radius: 3px; }
+.scroll-y::-webkit-scrollbar-thumb:hover { background: #C9CDD4; }
 
 ::selection {
-  background: rgba(180, 120, 60, 0.15);
+  background: rgba(79, 70, 229, 0.12);
 }

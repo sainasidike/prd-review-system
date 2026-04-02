@@ -42,55 +42,47 @@ export default function DocumentUploader() {
   };
 
   return (
-    <div className="max-w-xl">
-      <div
-        className={`relative border border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${
+    <div>
+      <label
+        className={`block border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all duration-200 ${
           isDragging
-            ? 'border-accent/50 bg-accent/[0.03] scale-[1.01]'
-            : 'border-sand-300 bg-white hover:border-sand-400'
+            ? 'border-indigo-400 bg-indigo-50/50'
+            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50/50'
         }`}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
       >
-        <div className="space-y-3">
-          <p className="font-display font-semibold text-ink-600 text-sm">
-            {isDragging ? '松开上传' : '拖拽文件到这里'}
-          </p>
-          <p className="text-xs text-ink-300">
-            PDF · Word · Markdown · 纯文本
-          </p>
+        <input
+          type="file"
+          className="hidden"
+          accept=".pdf,.doc,.docx,.md,.txt"
+          onChange={handleFileInput}
+          disabled={isUploading}
+        />
 
-          <label className="inline-block">
-            <input
-              type="file"
-              className="hidden"
-              accept=".pdf,.doc,.docx,.md,.txt"
-              onChange={handleFileInput}
-              disabled={isUploading}
-            />
-            <span className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-              isUploading
-                ? 'bg-sand-100 text-ink-300 cursor-wait'
-                : 'bg-sand-100 text-ink-500 hover:bg-sand-200 border border-sand-200'
-            }`}>
-              {isUploading ? (
-                <>
-                  <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  解析中...
-                </>
-              ) : '选择文件'}
-            </span>
-          </label>
-        </div>
-      </div>
+        {isUploading ? (
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 py-2">
+            <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            正在解析文档...
+          </div>
+        ) : (
+          <div className="py-2">
+            <p className="text-sm text-gray-500 mb-2">
+              {isDragging ? '松开上传文件' : '拖拽文件到这里，或'}
+              {!isDragging && <span className="text-indigo-600 font-medium"> 点击选择</span>}
+            </p>
+            <p className="text-xs text-gray-300">最大 10MB</p>
+          </div>
+        )}
+      </label>
 
       {error && (
-        <div role="alert" className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
-          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <div role="alert" className="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-xs flex items-center gap-2">
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           {error}
