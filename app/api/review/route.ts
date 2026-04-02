@@ -108,7 +108,10 @@ function parseGeminiResponse(data: any): any {
   try {
     // 提取文本内容
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    console.log('Gemini 原始响应文本:', text?.substring(0, 500));
+
     if (!text) {
+      console.error('Gemini 响应结构:', JSON.stringify(data, null, 2).substring(0, 1000));
       throw new Error('Gemini 响应格式错误：缺少文本内容');
     }
 
@@ -118,17 +121,22 @@ function parseGeminiResponse(data: any): any {
                       [null, text];
 
     const jsonText = jsonMatch[1] || text;
+    console.log('提取的 JSON 文本:', jsonText.substring(0, 300));
+
     const parsed = JSON.parse(jsonText);
 
     // 验证格式
     if (!parsed.comments || !Array.isArray(parsed.comments)) {
+      console.error('解析后的对象:', JSON.stringify(parsed, null, 2).substring(0, 500));
       throw new Error('返回格式错误：缺少 comments 数组');
     }
 
+    console.log('成功解析，评论数量:', parsed.comments.length);
     return parsed;
   } catch (error) {
-    console.error('JSON 解析失败:', error);
-    throw new Error('AI 返回格式无效，请重试');
+    console.error('JSON 解析失败详情:', error);
+    console.error('错误类型:', error instanceof Error ? error.message : String(error));
+    throw new Error(`AI 返回格式无效: ${error instanceof Error ? error.message : '未知错误'}`);
   }
 }
 
