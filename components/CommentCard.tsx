@@ -13,47 +13,48 @@ interface CommentCardProps {
 export default function CommentCard({ comment, reviewerColor }: CommentCardProps) {
   const setHighlightedParagraphId = useReviewStore(state => state.setHighlightedParagraphId);
 
-  const severityConfig = {
-    high: { bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-100 text-red-700', label: '高' },
-    medium: { bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-700', label: '中' },
-    low: { bg: 'bg-green-50', border: 'border-green-200', badge: 'bg-green-100 text-green-700', label: '低' },
+  const severity = {
+    high: { dot: 'bg-red-400', label: 'HIGH', ring: 'border-red-500/20 bg-red-500/5' },
+    medium: { dot: 'bg-amber-400', label: 'MED', ring: 'border-amber-500/20 bg-amber-500/5' },
+    low: { dot: 'bg-emerald-400', label: 'LOW', ring: 'border-emerald-500/20 bg-emerald-500/5' },
   }[comment.severity];
 
-  const typeConfig = {
-    question: { icon: '?', bg: 'bg-blue-100', text: 'text-blue-600' },
-    suggestion: { icon: '!', bg: 'bg-purple-100', text: 'text-purple-600' },
-    concern: { icon: '!', bg: 'bg-orange-100', text: 'text-orange-600' },
-    praise: { icon: '+', bg: 'bg-green-100', text: 'text-green-600' },
+  const typeLabel = {
+    question: '提问',
+    suggestion: '建议',
+    concern: '顾虑',
+    praise: '肯定',
   }[comment.type];
 
   return (
     <div
-      className={`group border rounded-xl p-4 ${severityConfig.bg} ${severityConfig.border} cursor-pointer hover:shadow-md transition-all duration-200 hover:-translate-y-0.5`}
+      className="group border border-surface-3 rounded-xl p-4 bg-surface-1 hover:bg-surface-2 hover:border-surface-4 cursor-pointer transition-all duration-200"
       onMouseEnter={() => setHighlightedParagraphId(comment.paragraphId)}
       onMouseLeave={() => setHighlightedParagraphId(null)}
     >
-      {/* Top row: type + severity */}
-      <div className="flex items-center justify-between mb-2.5">
-        <div className="flex items-center gap-2">
-          <span className={`w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold ${typeConfig.bg} ${typeConfig.text}`}>
-            {typeConfig.icon}
-          </span>
-          <span className="text-xs text-slate-400">
-            段落 {comment.paragraphId}
-          </span>
-        </div>
-        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${severityConfig.badge}`}>
-          {severityConfig.label}
+      {/* Meta row */}
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-[11px] text-warm-300/30 font-medium px-2 py-0.5 rounded bg-surface-2 border border-surface-3">
+          {typeLabel}
         </span>
+        <span className="text-[11px] text-warm-300/20">P{comment.paragraphId}</span>
+        <div className="flex-1" />
+        <div className="flex items-center gap-1.5">
+          <span className={`w-1.5 h-1.5 rounded-full ${severity.dot}`} />
+          <span className="text-[10px] text-warm-300/30 font-medium tracking-wider">{severity.label}</span>
+        </div>
       </div>
 
-      {/* Quoted text */}
-      <div className="mb-2.5 text-xs py-1.5 px-2.5 rounded-lg bg-white/60 border-l-2 text-slate-500 italic" style={{ borderColor: reviewerColor }}>
+      {/* Quote */}
+      <div
+        className="mb-3 px-3 py-2 rounded-lg bg-surface-0/50 border-l-2 text-xs text-warm-300/40 italic leading-relaxed"
+        style={{ borderColor: `${reviewerColor}50` }}
+      >
         &ldquo;{comment.quotedText}&rdquo;
       </div>
 
-      {/* Comment content */}
-      <p className="text-sm text-slate-700 leading-relaxed">
+      {/* Content */}
+      <p className="text-[13px] text-warm-200/80 leading-[1.7]">
         {comment.content}
       </p>
     </div>

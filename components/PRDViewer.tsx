@@ -12,20 +12,20 @@ export default function PRDViewer() {
   const renderParagraph = (p: Paragraph) => {
     const isHighlighted = p.id === highlightedParagraphId;
 
-    const baseClasses = 'transition-all duration-300 rounded-lg px-4 py-2';
-    const highlightClasses = isHighlighted
-      ? 'bg-amber-50 border-l-4 border-amber-400 shadow-sm'
-      : 'border-l-4 border-transparent';
+    const base = 'transition-all duration-300 rounded-lg px-4 py-1.5 border-l-[3px]';
+    const highlight = isHighlighted
+      ? 'border-l-warm-400 bg-warm-400/10'
+      : 'border-l-transparent';
 
     if (p.type === 'heading') {
       const level = p.level || 1;
-      const sizes: Record<number, string> = {
-        1: 'text-2xl font-bold text-slate-900 mt-8 mb-3',
-        2: 'text-xl font-semibold text-slate-800 mt-6 mb-2',
-        3: 'text-lg font-semibold text-slate-700 mt-4 mb-2',
+      const styles: Record<number, string> = {
+        1: 'text-[1.6rem] font-bold text-neutral-900 mt-10 mb-3 font-display',
+        2: 'text-xl font-semibold text-neutral-800 mt-7 mb-2 font-display',
+        3: 'text-base font-semibold text-neutral-700 mt-5 mb-2 font-display',
       };
       return (
-        <div key={p.id} id={`p-${p.id}`} className={`${baseClasses} ${highlightClasses} ${sizes[level] || sizes[3]}`}>
+        <div key={p.id} id={`p-${p.id}`} className={`${base} ${highlight} ${styles[level] || styles[3]}`}>
           {p.content}
         </div>
       );
@@ -33,25 +33,25 @@ export default function PRDViewer() {
 
     if (p.type === 'list') {
       return (
-        <div key={p.id} id={`p-${p.id}`} className={`${baseClasses} ${highlightClasses} ml-6 mb-0.5 flex items-start gap-2`}>
-          <span className="text-slate-300 mt-1.5 shrink-0">
+        <div key={p.id} id={`p-${p.id}`} className={`${base} ${highlight} ml-5 mb-0.5 flex items-start gap-2.5`}>
+          <span className="text-warm-400/60 mt-2 shrink-0">
             <svg className="w-1.5 h-1.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
           </span>
-          <span className="text-slate-600 leading-relaxed">{p.content}</span>
+          <span className="text-neutral-600 leading-[1.8] text-[0.9rem]">{p.content}</span>
         </div>
       );
     }
 
     return (
-      <div key={p.id} id={`p-${p.id}`} className={`${baseClasses} ${highlightClasses} mb-1 text-slate-600 leading-relaxed`}>
+      <div key={p.id} id={`p-${p.id}`} className={`${base} ${highlight} mb-1 text-neutral-600 leading-[1.8] text-[0.9rem]`}>
         {p.content}
       </div>
     );
   };
 
   return (
-    <div className="h-full overflow-y-auto p-8 bg-white">
-      <div className="max-w-none prose-prd">
+    <div className="h-full overflow-y-auto px-10 py-8">
+      <div className="max-w-[680px] mx-auto">
         {document.paragraphs.map(renderParagraph)}
       </div>
     </div>

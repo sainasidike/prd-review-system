@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { parseDocument } from '@/lib/parser';
 import { useReviewStore } from '@/stores/reviewStore';
-import { SUPPORTED_FORMATS, MAX_FILE_SIZE } from '@/lib/constants';
+import { SUPPORTED_FORMATS } from '@/lib/constants';
 
 export default function DocumentUploader() {
   const [isDragging, setIsDragging] = useState(false);
@@ -14,16 +14,13 @@ export default function DocumentUploader() {
   const handleFile = async (file: File) => {
     setError(null);
     setIsUploading(true);
-
     try {
       const ext = '.' + file.name.split('.').pop()?.toLowerCase();
       if (!SUPPORTED_FORMATS.includes(ext)) {
         throw new Error(`不支持的文件格式，仅支持：${SUPPORTED_FORMATS.join(', ')}`);
       }
-
       const doc = await parseDocument(file);
       setDocument(doc);
-
     } catch (err) {
       setError(err instanceof Error ? err.message : '文件解析失败');
     } finally {
@@ -34,7 +31,6 @@ export default function DocumentUploader() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
   };
@@ -46,32 +42,40 @@ export default function DocumentUploader() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl">
       <div
-        className={`relative border-2 border-dashed rounded-2xl p-14 text-center transition-all duration-300 ${
+        className={`relative border rounded-2xl p-12 text-center transition-all duration-300 ${
           isDragging
-            ? 'border-blue-400 bg-blue-50/80 scale-[1.02] shadow-lg shadow-blue-100'
-            : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-md'
+            ? 'border-warm-400/50 bg-warm-400/[0.04] scale-[1.01]'
+            : 'border-surface-3 bg-surface-1/50 hover:border-surface-4 hover:bg-surface-1'
         }`}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
       >
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-warm-400/20 rounded-tl-2xl" />
+        <div className="absolute top-0 right-0 w-6 h-6 border-t border-r border-warm-400/20 rounded-tr-2xl" />
+        <div className="absolute bottom-0 left-0 w-6 h-6 border-b border-l border-warm-400/20 rounded-bl-2xl" />
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-warm-400/20 rounded-br-2xl" />
+
         <div className="space-y-5">
-          <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center transition-colors ${
-            isDragging ? 'bg-blue-100' : 'bg-slate-100'
+          <div className={`mx-auto w-14 h-14 rounded-2xl flex items-center justify-center border transition-colors duration-300 ${
+            isDragging
+              ? 'bg-warm-400/10 border-warm-400/30'
+              : 'bg-surface-2 border-surface-3'
           }`}>
-            <svg className={`w-8 h-8 transition-colors ${isDragging ? 'text-blue-500' : 'text-slate-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            <svg className={`w-6 h-6 transition-colors ${isDragging ? 'text-warm-400' : 'text-warm-300/30'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-1">
-              {isDragging ? '松开即可上传' : '上传 PRD 文档'}
-            </h3>
-            <p className="text-sm text-slate-400">
-              支持 PDF、Word、Markdown、纯文本格式
+            <p className="font-display font-semibold text-warm-100 mb-1">
+              {isDragging ? '松开上传' : '拖拽文件到这里'}
+            </p>
+            <p className="text-sm text-warm-300/35">
+              PDF · Word · Markdown · 纯文本
             </p>
           </div>
 
@@ -83,10 +87,10 @@ export default function DocumentUploader() {
               onChange={handleFileInput}
               disabled={isUploading}
             />
-            <span className={`cursor-pointer inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium transition-all ${
+            <span className={`cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
               isUploading
-                ? 'bg-slate-100 text-slate-400 cursor-wait'
-                : 'bg-slate-900 text-white hover:bg-slate-800 shadow-sm hover:shadow-md'
+                ? 'bg-surface-3 text-warm-300/40 cursor-wait'
+                : 'bg-surface-2 text-warm-200 hover:bg-surface-3 border border-surface-4 hover:border-warm-400/20'
             }`}>
               {isUploading ? (
                 <>
@@ -99,22 +103,15 @@ export default function DocumentUploader() {
               ) : '选择文件'}
             </span>
           </label>
-
-          <p className="text-xs text-slate-300">
-            或将文件拖拽到此处 · 最大 10MB
-          </p>
         </div>
       </div>
 
       {error && (
-        <div
-          role="alert"
-          className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-3"
-        >
-          <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div role="alert" className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-300 text-sm flex items-center gap-3">
+          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>{error}</span>
+          {error}
         </div>
       )}
     </div>

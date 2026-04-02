@@ -31,55 +31,61 @@ export default function ReviewPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50">
+    <div className="h-screen flex flex-col bg-surface-0">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-3.5 shrink-0">
+      <header className="bg-surface-1 border-b border-surface-3 px-6 py-3 shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+            {/* Logo */}
+            <div className="w-7 h-7 rounded-lg bg-warm-400/20 border border-warm-400/30 flex items-center justify-center">
+              <span className="text-warm-400 text-xs font-bold font-display">R</span>
             </div>
+
+            <div className="h-5 w-px bg-surface-3" />
+
             <div>
-              <h1 className="text-lg font-bold text-slate-900 leading-tight">{document.title}</h1>
-              <div className="flex items-center gap-3 text-sm text-slate-500 mt-0.5">
-                <span className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+              <h1 className="font-display font-semibold text-warm-100 text-sm leading-tight">{document.title}</h1>
+              <div className="flex items-center gap-3 mt-0.5">
+                <span className="text-xs text-warm-300/35">
                   {reviewResult.reviews.length} 位评委
                 </span>
-                <span className="text-slate-300">|</span>
-                <span>{totalComments} 条评论</span>
+                <span className="text-xs text-warm-300/20">·</span>
+                <span className="text-xs text-warm-300/35">
+                  {totalComments} 条评论
+                </span>
                 {highCount > 0 && (
                   <>
-                    <span className="text-slate-300">|</span>
-                    <span className="text-red-500 font-medium">{highCount} 个高优</span>
+                    <span className="text-xs text-warm-300/20">·</span>
+                    <span className="text-xs text-red-400/80 font-medium">
+                      {highCount} 高优
+                    </span>
                   </>
                 )}
               </div>
             </div>
           </div>
+
           <button
             onClick={handleNewReview}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors"
+            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-warm-300/50 border border-surface-3 rounded-lg hover:bg-surface-2 hover:text-warm-200 hover:border-surface-4 transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             新建评审
           </button>
         </div>
       </header>
 
-      {/* Dual-pane layout */}
+      {/* Dual-pane */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left: PRD content */}
-        <div className="w-[58%] border-r border-slate-200 overflow-auto custom-scrollbar">
+        {/* Left: PRD content - light background for readability */}
+        <div className="w-[56%] border-r border-surface-3 overflow-auto scroll-light bg-warm-50">
           <PRDViewer />
         </div>
 
-        {/* Right: Comments */}
-        <div className="w-[42%] overflow-auto custom-scrollbar">
+        {/* Right: Comments - dark */}
+        <div className="w-[44%] overflow-auto scroll-dark">
           <CommentPanel />
         </div>
       </div>

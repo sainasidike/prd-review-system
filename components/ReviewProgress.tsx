@@ -12,25 +12,24 @@ export default function ReviewProgress() {
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-semibold text-slate-800">评审进行中</h3>
-            <span className="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-              {current}/{total}
-            </span>
-          </div>
-
-          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-            <div
-              className="bg-gradient-to-r from-blue-500 to-indigo-500 h-full transition-all duration-500 ease-out rounded-full"
-              style={{ width: `${percentage}%` }}
-            />
-          </div>
+    <div className="max-w-2xl">
+      <div className="bg-surface-1 border border-surface-3 rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-display font-semibold text-warm-100">评审进行中</h3>
+          <span className="text-xs text-warm-300/40 bg-surface-2 px-3 py-1 rounded-full border border-surface-3">
+            {current} / {total}
+          </span>
         </div>
 
-        <div className="space-y-2">
+        {/* Progress bar */}
+        <div className="w-full h-1 bg-surface-3 rounded-full mb-6 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-warm-400 to-warm-500 rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+
+        <div className="space-y-1">
           {REVIEWERS.map((reviewer, index) => {
             const isDone = index < current;
             const isActive = index === current;
@@ -39,44 +38,35 @@ export default function ReviewProgress() {
             return (
               <div
                 key={reviewer.id}
-                className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${
-                  isActive ? 'bg-blue-50 border border-blue-100' :
-                  isDone ? 'bg-slate-50' : ''
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-500 ${
+                  isActive ? 'bg-warm-400/[0.06] border border-warm-400/15' :
+                  isDone ? 'opacity-60' : 'opacity-25'
                 }`}
               >
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl transition-all ${
-                    isActive ? 'scale-110' : isPending ? 'opacity-40' : ''
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center text-lg border transition-all ${
+                    isActive ? 'scale-105 border-warm-400/20' :
+                    isDone ? 'border-surface-3' : 'border-transparent'
                   }`}
-                  style={{ backgroundColor: `${reviewer.color}15` }}
+                  style={{ backgroundColor: isDone || isActive ? `${reviewer.color}10` : 'transparent' }}
                 >
                   {reviewer.icon}
                 </div>
-                <div className="flex-1">
-                  <div className={`text-sm font-medium ${isPending ? 'text-slate-400' : 'text-slate-700'}`}>
-                    {reviewer.name}
+                <span className={`text-sm flex-1 ${isActive ? 'text-warm-100 font-medium' : 'text-warm-300/50'}`}>
+                  {reviewer.name}
+                </span>
+                {isDone && (
+                  <svg className="w-4 h-4 text-emerald-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+                {isActive && (
+                  <div className="flex gap-1 animate-progress">
+                    <span className="w-1 h-1 rounded-full bg-warm-400" />
+                    <span className="w-1 h-1 rounded-full bg-warm-400 opacity-60" />
+                    <span className="w-1 h-1 rounded-full bg-warm-400 opacity-30" />
                   </div>
-                </div>
-                <div>
-                  {isDone ? (
-                    <div className="flex items-center gap-1.5 text-sm text-green-600">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>完成</span>
-                    </div>
-                  ) : isActive ? (
-                    <div className="flex items-center gap-1.5 text-sm text-blue-600">
-                      <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      <span>评审中</span>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-slate-300">等待中</span>
-                  )}
-                </div>
+                )}
               </div>
             );
           })}
