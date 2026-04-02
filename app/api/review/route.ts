@@ -85,10 +85,20 @@ async function callGeminiAPI(prompt: string): Promise<any> {
 
   if (!response.ok) {
     const error = await response.text();
+    console.error('Gemini API 调用失败:', {
+      status: response.status,
+      statusText: response.statusText,
+      error: error
+    });
     throw new Error(`Gemini API 错误 (${response.status}): ${error}`);
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('Gemini API 响应成功:', {
+    hasCandidates: !!result.candidates,
+    candidatesCount: result.candidates?.length || 0
+  });
+  return result;
 }
 
 /**
@@ -127,6 +137,12 @@ function parseGeminiResponse(data: any): any {
  */
 export async function POST(request: NextRequest) {
   try {
+    // 检查环境变量
+    console.log('环境变量检查:', {
+      hasGeminiKey: !!GEMINI_API_KEY,
+      keyPrefix: GEMINI_API_KEY?.substring(0, 10) + '...'
+    });
+
     const { reviewerIndex, prdDocument } = await request.json();
 
     // 验证参数

@@ -10,6 +10,7 @@ export async function reviewPRDWithGemini(
   onProgress: (current: number, total: number) => void
 ): Promise<ReviewResult> {
   const reviews: Review[] = [];
+  const errors: string[] = [];
 
   for (let i = 0; i < REVIEWERS.length; i++) {
     const reviewer = REVIEWERS[i];
@@ -29,13 +30,19 @@ export async function reviewPRDWithGemini(
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || `API 错误: ${response.status}`);
+        const errorMsg = error.error || `API 错误: ${response.status}`;
+        console.error(`评委 ${reviewer.name} API 错误:`, errorMsg);
+        errors.push(`${reviewer.name}: ${errorMsg}`);
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
 
       if (!data.success) {
-        throw new Error(data.error || '评审失败');
+        const errorMsg = data.error || '评审失败';
+        console.error(`评委 ${reviewer.name} 评审失败:`, errorMsg);
+        errors.push(`${reviewer.name}: ${errorMsg}`);
+        throw new Error(errorMsg);
       }
 
       // 验证并转换评论
@@ -78,6 +85,14 @@ export async function reviewPRDWithGemini(
       console.error(`评委 ${reviewer.name} 评审失败:`, error);
       // 继续其他评委的评审
     }
+  }
+
+  // 如果所有评委都失败，抛出详细错误
+  if (reviews.length === 0 && errors.length > 0) {
+    const detailedError = errors.length === 1
+      ? errors[0]
+      : `所有评委评审失败：\n${errors.join('\n')}`;
+    throw new Error(detailedError);
   }
 
   return {
