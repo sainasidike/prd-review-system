@@ -115,17 +115,55 @@ function parseGeminiResponse(data: any): any {
       throw new Error('Gemini 响应格式错误：缺少文本内容');
     }
 
-    // 尝试多种 JSON 提取方式（更宽松的匹配）
     let jsonText = text;
 
-    // 移除 markdown 代码块标记（各种可能的格式）
-    jsonText = jsonText.replace(/```json\s*/g, '');
+    // Step 1: 移除 markdown 代码块标记
+    jsonText = jsonText.replace(/```json\s*/gi, '');
     jsonText = jsonText.replace(/```\s*/g, '');
     jsonText = jsonText.trim();
 
+    // Step 2: 提取 JSON 对象（从第一个 { 到最后一个 }）
+    const firstBrace = jsonText.indexOf('{');
+    const lastBrace = jsonText.lastIndexOf('}');
+
+    if (firstBrace === -1 || lastBrace === -1 || firstBrace >= lastBrace) {
+      console.error('无法找到有效的 JSON 边界');
+      throw new Error('响应中未找到有效的 JSON 对象');
+    }
+
+    jsonText = jsonText.substring(firstBrace, lastBrace + 1);
     console.log('提取的 JSON 文本:', jsonText.substring(0, 300));
 
-    const parsed = JSON.parse(jsonText);
+    // Step 3: 尝试直接解析
+    let parsed: any;
+    try {
+      parsed = JSON.parse(jsonText);
+    } catch (parseError) {
+      // Step 4: 如果失败，尝试修复常见问题
+      console.log('首次解析失败，尝试修复...');
+
+      // 修复未转义的换行符在字符串中
+      let fixed = jsonText
+        .replace(/("\w+"\s*:\s*"[^"]*?)\n([^"]*?")/g, '$1\\n$2')  // 修复字符串中的换行
+        .replace(/("\w+"\s*:\s*"[^"]*?)\r([^"]*?")/g, '$1\\r$2')  // 修复字符串中的回车
+        .replace(/("\w+"\s*:\s*"[^"]*?)\t([^"]*?")/g, '$1\\t$2'); // 修复字符串中的制表符
+
+      console.log('修复后的 JSON:', fixed.substring(0, 300));
+
+      try {
+        parsed = JSON.parse(fixed);
+      } catch (secondError) {
+        // Step 5: 最后尝试 - 使用更激进的清理
+        console.log('第二次解析失败，尝试激进清理...');
+
+        // 移除字符串中的所有控制字符（除了已转义的）
+        fixed = jsonText.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, (match) => {
+          return match.replace(/[\n\r\t]/g, ' ');
+        });
+
+        parsed = JSON.parse(fixed);
+      }
+    }
 
     // 验证格式
     if (!parsed.comments || !Array.isArray(parsed.comments)) {
