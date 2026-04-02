@@ -4,46 +4,11 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
-:root {
-  --surface-0: #0A0A0B;
-  --surface-1: #111113;
-  --surface-2: #1A1A1D;
-  --surface-3: #232326;
-  --surface-4: #2C2C30;
-  --warm-50: #FAF6F1;
-  --warm-100: #F5F0EB;
-  --warm-200: #E8DDD2;
-  --warm-300: #D4C4B0;
-  --warm-400: #C8956C;
-  --accent: #C8956C;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 body {
-  background: var(--surface-0);
-  color: var(--warm-100);
+  background: #FAFAF8;
+  color: #1a1a1a;
   font-family: 'DM Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Noise texture overlay */
-.noise-bg::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 9999;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
 }
 
 /* Stagger animations */
@@ -57,45 +22,36 @@ body {
 .stagger > *:nth-child(4) { animation-delay: 0.24s; }
 .stagger > *:nth-child(5) { animation-delay: 0.30s; }
 .stagger > *:nth-child(6) { animation-delay: 0.36s; }
-.stagger > *:nth-child(7) { animation-delay: 0.42s; }
-.stagger > *:nth-child(8) { animation-delay: 0.48s; }
 
 @keyframes staggerFadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.7s ease-out forwards;
+}
+
 /* Scrollbar */
-.scroll-dark::-webkit-scrollbar { width: 5px; }
-.scroll-dark::-webkit-scrollbar-track { background: transparent; }
-.scroll-dark::-webkit-scrollbar-thumb { background: #2C2C30; border-radius: 4px; }
-.scroll-dark::-webkit-scrollbar-thumb:hover { background: #3C3C40; }
-
-.scroll-light::-webkit-scrollbar { width: 5px; }
-.scroll-light::-webkit-scrollbar-track { background: transparent; }
-.scroll-light::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
-.scroll-light::-webkit-scrollbar-thumb:hover { background: #bbb; }
-
-/* Glow effects */
-.glow-amber {
-  box-shadow: 0 0 60px rgba(200, 149, 108, 0.15), 0 0 120px rgba(200, 149, 108, 0.05);
-}
-
-.glow-soft {
-  box-shadow: 0 0 80px rgba(200, 149, 108, 0.08);
-}
+.scroll-thin::-webkit-scrollbar { width: 5px; }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+.scroll-thin::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 4px; }
+.scroll-thin::-webkit-scrollbar-thumb:hover { background: #ccc; }
 
 /* Button hover lift */
 .btn-lift {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(200, 149, 108, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Selection color */
 ::selection {
-  background: rgba(200, 149, 108, 0.3);
-  color: #FAF6F1;
+  background: rgba(180, 120, 60, 0.15);
 }

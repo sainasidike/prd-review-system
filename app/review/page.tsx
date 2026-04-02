@@ -31,34 +31,23 @@ export default function ReviewPage() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-surface-0">
+    <div className="h-screen flex flex-col bg-sand-50">
       {/* Header */}
-      <header className="bg-surface-1 border-b border-surface-3 px-6 py-3 shrink-0">
+      <header className="bg-white border-b border-sand-200 px-6 py-3 shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {/* Logo */}
-            <div className="w-7 h-7 rounded-lg bg-warm-400/20 border border-warm-400/30 flex items-center justify-center">
-              <span className="text-warm-400 text-xs font-bold font-display">R</span>
-            </div>
-
-            <div className="h-5 w-px bg-surface-3" />
-
+            <span className="font-display font-semibold text-ink-700 text-sm">PRD Review</span>
+            <div className="h-4 w-px bg-sand-200" />
             <div>
-              <h1 className="font-display font-semibold text-warm-100 text-sm leading-tight">{document.title}</h1>
-              <div className="flex items-center gap-3 mt-0.5">
-                <span className="text-xs text-warm-300/35">
-                  {reviewResult.reviews.length} 位评委
-                </span>
-                <span className="text-xs text-warm-300/20">·</span>
-                <span className="text-xs text-warm-300/35">
-                  {totalComments} 条评论
-                </span>
+              <h1 className="font-display font-medium text-ink-600 text-sm leading-tight">{document.title}</h1>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-xs text-ink-300">{reviewResult.reviews.length} 评委</span>
+                <span className="text-xs text-sand-300">·</span>
+                <span className="text-xs text-ink-300">{totalComments} 条评论</span>
                 {highCount > 0 && (
                   <>
-                    <span className="text-xs text-warm-300/20">·</span>
-                    <span className="text-xs text-red-400/80 font-medium">
-                      {highCount} 高优
-                    </span>
+                    <span className="text-xs text-sand-300">·</span>
+                    <span className="text-xs text-red-500 font-medium">{highCount} 高优</span>
                   </>
                 )}
               </div>
@@ -67,25 +56,22 @@ export default function ReviewPage() {
 
           <button
             onClick={handleNewReview}
-            className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-warm-300/50 border border-surface-3 rounded-lg hover:bg-surface-2 hover:text-warm-200 hover:border-surface-4 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-ink-400 border border-sand-200 rounded-lg hover:bg-sand-100 hover:text-ink-600 transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
-            新建评审
+            新建
           </button>
         </div>
       </header>
 
       {/* Dual-pane */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left: PRD content - light background for readability */}
-        <div className="w-[56%] border-r border-surface-3 overflow-auto scroll-light bg-warm-50">
+        <div className="w-[56%] border-r border-sand-200 overflow-auto scroll-thin bg-white">
           <PRDViewer />
         </div>
-
-        {/* Right: Comments - dark */}
-        <div className="w-[44%] overflow-auto scroll-dark">
+        <div className="w-[44%] overflow-auto scroll-thin bg-sand-50">
           <CommentPanel />
         </div>
       </div>

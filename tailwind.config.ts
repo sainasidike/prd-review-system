@@ -9,23 +9,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        surface: {
-          0: '#0A0A0B',
-          1: '#111113',
-          2: '#1A1A1D',
-          3: '#232326',
-          4: '#2C2C30',
+        sand: {
+          50: '#FAFAF8',
+          100: '#F5F5F0',
+          200: '#EBEBDF',
+          300: '#D6D6C8',
+          400: '#B0B09A',
+          500: '#8A8A74',
         },
-        warm: {
-          50: '#FAF6F1',
-          100: '#F5F0EB',
-          200: '#E8DDD2',
-          300: '#D4C4B0',
-          400: '#C8956C',
-          500: '#B8834E',
-          600: '#9A6B3A',
+        ink: {
+          50: '#F7F7F7',
+          100: '#E8E8E8',
+          200: '#D0D0D0',
+          300: '#999',
+          400: '#666',
+          500: '#444',
+          600: '#2A2A2A',
+          700: '#1A1A1A',
         },
-        accent: '#C8956C',
+        accent: '#B47A3C',
       },
       fontFamily: {
         display: ['"Bricolage Grotesque"', 'serif'],
@@ -33,36 +35,11 @@ const config: Config = {
       },
       animation: {
         'fade-up': 'fadeUp 0.7s ease-out forwards',
-        'fade-in': 'fadeIn 0.5s ease-out forwards',
-        'slide-up': 'slideUp 0.5s ease-out forwards',
-        'glow': 'glow 3s ease-in-out infinite alternate',
-        'float': 'float 6s ease-in-out infinite',
-        'progress': 'progressPulse 2s ease-in-out infinite',
       },
       keyframes: {
         fadeUp: {
           '0%': { opacity: '0', transform: 'translateY(24px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(12px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        glow: {
-          '0%': { opacity: '0.4' },
-          '100%': { opacity: '0.7' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-12px)' },
-        },
-        progressPulse: {
-          '0%, 100%': { opacity: '0.6' },
-          '50%': { opacity: '1' },
         },
       },
     },

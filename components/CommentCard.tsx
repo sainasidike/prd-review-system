@@ -14,9 +14,9 @@ export default function CommentCard({ comment, reviewerColor }: CommentCardProps
   const setHighlightedParagraphId = useReviewStore(state => state.setHighlightedParagraphId);
 
   const severity = {
-    high: { dot: 'bg-red-400', label: 'HIGH', ring: 'border-red-500/20 bg-red-500/5' },
-    medium: { dot: 'bg-amber-400', label: 'MED', ring: 'border-amber-500/20 bg-amber-500/5' },
-    low: { dot: 'bg-emerald-400', label: 'LOW', ring: 'border-emerald-500/20 bg-emerald-500/5' },
+    high: { dot: 'bg-red-500', label: 'HIGH' },
+    medium: { dot: 'bg-amber-500', label: 'MED' },
+    low: { dot: 'bg-emerald-500', label: 'LOW' },
   }[comment.severity];
 
   const typeLabel = {
@@ -28,33 +28,30 @@ export default function CommentCard({ comment, reviewerColor }: CommentCardProps
 
   return (
     <div
-      className="group border border-surface-3 rounded-xl p-4 bg-surface-1 hover:bg-surface-2 hover:border-surface-4 cursor-pointer transition-all duration-200"
+      className="border border-sand-200 rounded-xl p-4 bg-white hover:border-sand-300 hover:shadow-sm cursor-pointer transition-all duration-200"
       onMouseEnter={() => setHighlightedParagraphId(comment.paragraphId)}
       onMouseLeave={() => setHighlightedParagraphId(null)}
     >
-      {/* Meta row */}
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-[11px] text-warm-300/30 font-medium px-2 py-0.5 rounded bg-surface-2 border border-surface-3">
+      <div className="flex items-center gap-2 mb-2.5">
+        <span className="text-[11px] text-ink-400 font-medium px-2 py-0.5 rounded bg-sand-100">
           {typeLabel}
         </span>
-        <span className="text-[11px] text-warm-300/20">P{comment.paragraphId}</span>
+        <span className="text-[11px] text-ink-300">P{comment.paragraphId}</span>
         <div className="flex-1" />
         <div className="flex items-center gap-1.5">
           <span className={`w-1.5 h-1.5 rounded-full ${severity.dot}`} />
-          <span className="text-[10px] text-warm-300/30 font-medium tracking-wider">{severity.label}</span>
+          <span className="text-[10px] text-ink-300 font-medium tracking-wider">{severity.label}</span>
         </div>
       </div>
 
-      {/* Quote */}
       <div
-        className="mb-3 px-3 py-2 rounded-lg bg-surface-0/50 border-l-2 text-xs text-warm-300/40 italic leading-relaxed"
-        style={{ borderColor: `${reviewerColor}50` }}
+        className="mb-2.5 px-3 py-1.5 rounded-lg bg-sand-50 border-l-2 text-xs text-ink-400 italic leading-relaxed"
+        style={{ borderColor: `${reviewerColor}60` }}
       >
         &ldquo;{comment.quotedText}&rdquo;
       </div>
 
-      {/* Content */}
-      <p className="text-[13px] text-warm-200/80 leading-[1.7]">
+      <p className="text-[13px] text-ink-500 leading-[1.7]">
         {comment.content}
       </p>
     </div>
