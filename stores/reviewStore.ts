@@ -14,17 +14,13 @@ interface ReviewState {
   reviewProgress: ReviewProgress | null;
   setReviewProgress: (progress: ReviewProgress | null) => void;
 
-  // API Key
-  apiKey: string;
-  setApiKey: (key: string) => void;
-
   // UI state
   selectedReviewers: string[];
   toggleReviewer: (reviewerId: string) => void;
   highlightedParagraphId: number | null;
   setHighlightedParagraphId: (id: number | null) => void;
 
-  // Reset all state except apiKey (preserve user's API key for convenience)
+  // Reset all state
   reset: () => void;
 }
 
@@ -37,9 +33,6 @@ export const useReviewStore = create<ReviewState>((set) => ({
 
   reviewProgress: null,
   setReviewProgress: (progress) => set({ reviewProgress: progress }),
-
-  apiKey: '',
-  setApiKey: (key) => set({ apiKey: key }),
 
   selectedReviewers: [],
   toggleReviewer: (reviewerId) =>

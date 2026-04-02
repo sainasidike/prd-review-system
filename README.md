@@ -71,7 +71,7 @@ AI 驱动的产品需求文档（PRD）多角度评审工具
 - **UI 框架**: Tailwind CSS 3.4
 - **状态管理**: Zustand 4.5
 - **文档解析**: pdfjs-dist 4.0、mammoth 1.6
-- **AI 模型**: Claude 3.5 Sonnet (API)
+- **AI 模型**: Google Gemini 2.5 Flash (API)
 - **部署**: Vercel (静态导出)
 
 ## 🏗️ 项目结构
