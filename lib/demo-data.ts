@@ -81,7 +81,7 @@ export const DEMO_REVIEW_RESULT: ReviewResult = {
   reviews: [
     {
       reviewerId: 'operation',
-      reviewerName: '运营团队 Leader',
+      reviewerName: 'Sarah · 运营 Leader',
       icon: '🏃',
       color: '#10B981',
       comments: [
@@ -114,7 +114,7 @@ export const DEMO_REVIEW_RESULT: ReviewResult = {
     },
     {
       reviewerId: 'brand',
-      reviewerName: '品牌团队 Leader',
+      reviewerName: 'Olivia · 品牌 Leader',
       icon: '💼',
       color: '#8B5CF6',
       comments: [
@@ -147,7 +147,7 @@ export const DEMO_REVIEW_RESULT: ReviewResult = {
     },
     {
       reviewerId: 'tech',
-      reviewerName: '技术团队 Leader',
+      reviewerName: 'Marcus · 技术 Leader',
       icon: '💻',
       color: '#3B82F6',
       comments: [
@@ -180,7 +180,7 @@ export const DEMO_REVIEW_RESULT: ReviewResult = {
     },
     {
       reviewerId: 'product',
-      reviewerName: '产品团队 Leader',
+      reviewerName: 'Ethan · 产品 Leader',
       icon: '📱',
       color: '#F59E0B',
       comments: [
@@ -213,7 +213,7 @@ export const DEMO_REVIEW_RESULT: ReviewResult = {
     },
     {
       reviewerId: 'ux',
-      reviewerName: '交互团队 Leader',
+      reviewerName: 'Luna · 交互 Leader',
       icon: '🎨',
       color: '#EC4899',
       comments: [
@@ -246,7 +246,7 @@ export const DEMO_REVIEW_RESULT: ReviewResult = {
     },
     {
       reviewerId: 'bi',
-      reviewerName: 'BI 团队 Leader',
+      reviewerName: 'Daniel · BI Leader',
       icon: '📊',
       color: '#06B6D4',
       comments: [

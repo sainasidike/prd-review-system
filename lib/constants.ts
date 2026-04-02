@@ -3,7 +3,7 @@ import { Reviewer } from './types';
 export const REVIEWERS: Reviewer[] = [
   {
     id: 'operation',
-    name: '运营团队 Leader',
+    name: 'Sarah · 运营 Leader',
     icon: '🏃',
     color: '#10B981',
     focusAreas: ['用户增长', '市场推广', '运营策略', 'KPI指标'],
@@ -11,7 +11,7 @@ export const REVIEWERS: Reviewer[] = [
   },
   {
     id: 'brand',
-    name: '品牌团队 Leader',
+    name: 'Olivia · 品牌 Leader',
     icon: '💼',
     color: '#8B5CF6',
     focusAreas: ['品牌定位', '用户体验', '视觉呈现', '品牌调性'],
@@ -19,7 +19,7 @@ export const REVIEWERS: Reviewer[] = [
   },
   {
     id: 'tech',
-    name: '技术团队 Leader',
+    name: 'Marcus · 技术 Leader',
     icon: '💻',
     color: '#3B82F6',
     focusAreas: ['技术可行性', '架构设计', '性能优化', '技术风险'],
@@ -27,7 +27,7 @@ export const REVIEWERS: Reviewer[] = [
   },
   {
     id: 'product',
-    name: '产品团队 Leader',
+    name: 'Ethan · 产品 Leader',
     icon: '📱',
     color: '#F59E0B',
     focusAreas: ['产品逻辑', '功能完整性', '用户价值', '竞品分析'],
@@ -35,7 +35,7 @@ export const REVIEWERS: Reviewer[] = [
   },
   {
     id: 'ux',
-    name: '交互团队 Leader',
+    name: 'Luna · 交互 Leader',
     icon: '🎨',
     color: '#EC4899',
     focusAreas: ['交互设计', '用户流程', '可用性', '体验细节'],
@@ -43,7 +43,7 @@ export const REVIEWERS: Reviewer[] = [
   },
   {
     id: 'bi',
-    name: 'BI 团队 Leader',
+    name: 'Daniel · BI Leader',
     icon: '📊',
     color: '#06B6D4',
     focusAreas: ['数据埋点', '指标设计', '分析维度', '数据驱动'],
