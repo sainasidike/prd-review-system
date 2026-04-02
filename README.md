@@ -80,10 +80,10 @@ AI 驱动的产品需求文档（PRD）多角度评审工具
 ├── app/                  # Next.js App Router 页面
 │   ├── page.tsx         # 主页（上传界面）
 │   ├── review/page.tsx  # 评审结果页
+│   ├── api/review/route.ts  # Gemini API 评审接口
 │   └── layout.tsx       # 根布局
 ├── components/          # React 组件
 │   ├── DocumentUploader.tsx
-│   ├── APIKeyInput.tsx
 │   ├── ReviewProgress.tsx
 │   ├── PRDViewer.tsx
 │   ├── CommentPanel.tsx
@@ -94,8 +94,8 @@ AI 驱动的产品需求文档（PRD）多角度评审工具
 │   ├── utils.ts        # 工具函数
 │   ├── segmenter.ts    # 文档分段算法
 │   ├── parser.ts       # 文档解析器
-│   ├── reviewer.ts     # AI 评审引擎
-│   └── storage.ts      # localStorage 工具
+│   ├── gemini-reviewer.ts  # Gemini AI 评审引擎
+│   └── demo-data.ts    # Demo 预生成数据
 └── stores/             # Zustand 状态管理
     └── reviewStore.ts
 ```

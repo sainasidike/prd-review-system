@@ -157,7 +157,7 @@ function parseGeminiResponse(data: any): any {
         console.log('第二次解析失败，尝试激进清理...');
 
         // 移除字符串中的所有控制字符（除了已转义的）
-        fixed = jsonText.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, (match) => {
+        fixed = jsonText.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, (match: string) => {
           return match.replace(/[\n\r\t]/g, ' ');
         });
 
@@ -186,10 +186,9 @@ function parseGeminiResponse(data: any): any {
 export async function POST(request: NextRequest) {
   try {
     // 检查环境变量
-    console.log('环境变量检查:', {
-      hasGeminiKey: !!GEMINI_API_KEY,
-      keyPrefix: GEMINI_API_KEY?.substring(0, 10) + '...'
-    });
+    if (!GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY 未配置');
+    }
 
     const { reviewerIndex, prdDocument } = await request.json();
 

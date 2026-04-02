@@ -54,4 +54,3 @@ export const REVIEWERS: Reviewer[] = [
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export const SUPPORTED_FORMATS = ['.pdf', '.doc', '.docx', '.md', '.txt'];
 export const MAX_PARAGRAPHS = 200;
-export const CLAUDE_MODEL = 'claude-3-5-sonnet-20241022';
