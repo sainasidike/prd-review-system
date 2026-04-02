@@ -8,6 +8,7 @@ import { useReviewStore } from '@/stores/reviewStore';
 import { reviewPRDWithGemini } from '@/lib/gemini-reviewer';
 import { DEMO_DOCUMENT, DEMO_REVIEW_RESULT } from '@/lib/demo-data';
 import { REVIEWERS } from '@/lib/constants';
+import ReviewerAvatar from '@/components/ReviewerAvatar';
 
 export default function Home() {
   const router = useRouter();
@@ -85,12 +86,7 @@ export default function Home() {
               className="bg-white rounded-xl p-4 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all duration-200"
             >
               <div className="flex items-center gap-3 mb-2">
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center text-lg"
-                  style={{ backgroundColor: `${reviewer.color}12` }}
-                >
-                  {reviewer.icon}
-                </div>
+                <ReviewerAvatar reviewerId={reviewer.id} size={36} />
                 <span className="font-medium text-gray-800 text-sm">{reviewer.name}</span>
               </div>
               <p className="text-xs text-gray-400 leading-relaxed">{reviewer.description}</p>

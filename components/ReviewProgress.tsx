@@ -2,6 +2,7 @@
 
 import { useReviewStore } from '@/stores/reviewStore';
 import { REVIEWERS } from '@/lib/constants';
+import ReviewerAvatar from './ReviewerAvatar';
 
 export default function ReviewProgress() {
   const progress = useReviewStore(state => state.reviewProgress);
@@ -38,7 +39,7 @@ export default function ReviewProgress() {
                 isDone ? 'bg-gray-50 opacity-60' : 'opacity-25'
               }`}
             >
-              <span className="text-base">{reviewer.icon}</span>
+              <ReviewerAvatar reviewerId={reviewer.id} size={28} />
               <span className={`text-xs flex-1 truncate ${isActive ? 'text-indigo-700 font-medium' : 'text-gray-500'}`}>
                 {reviewer.name.replace(' Leader', '')}
               </span>

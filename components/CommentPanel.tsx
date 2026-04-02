@@ -3,6 +3,7 @@
 import { useReviewStore } from '@/stores/reviewStore';
 import { REVIEWERS } from '@/lib/constants';
 import CommentCard from './CommentCard';
+import ReviewerAvatar from './ReviewerAvatar';
 
 export default function CommentPanel() {
   const reviewResult = useReviewStore(state => state.reviewResult);
@@ -45,7 +46,7 @@ export default function CommentPanel() {
                   backgroundColor: `${reviewer.color}08`,
                 } : {}}
               >
-                <span className="text-sm">{reviewer.icon}</span>
+                <ReviewerAvatar reviewerId={reviewer.id} size={20} />
                 <span>{reviewer.name.replace(' Leader', '').replace('团队 ', '')}</span>
                 {count > 0 && <span className="text-[10px] text-gray-300 ml-0.5">{count}</span>}
               </button>
@@ -63,7 +64,7 @@ export default function CommentPanel() {
             {filteredReviews.map(review => (
               <div key={review.reviewerId}>
                 <div className="flex items-center gap-2 mb-2.5 px-1">
-                  <span className="text-sm">{review.icon}</span>
+                  <ReviewerAvatar reviewerId={review.reviewerId} size={24} />
                   <span className="text-xs font-medium" style={{ color: review.color }}>{review.reviewerName}</span>
                   <div className="flex-1 h-px bg-gray-100" />
                   <span className="text-[11px] text-gray-300">{review.comments.length} 条</span>
