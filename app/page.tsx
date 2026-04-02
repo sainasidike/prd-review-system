@@ -3,10 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DocumentUploader from '@/components/DocumentUploader';
-import APIKeyInput from '@/components/APIKeyInput';
 import ReviewProgress from '@/components/ReviewProgress';
 import { useReviewStore } from '@/stores/reviewStore';
-import { reviewPRD } from '@/lib/reviewer';
+import { reviewPRDWithGemini } from '@/lib/gemini-reviewer';
 import { DEMO_DOCUMENT, DEMO_REVIEW_RESULT } from '@/lib/demo-data';
 
 export default function Home() {
@@ -15,7 +14,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   const document = useReviewStore(state => state.document);
-  const apiKey = useReviewStore(state => state.apiKey);
   const setDocument = useReviewStore(state => state.setDocument);
   const setReviewResult = useReviewStore(state => state.setReviewResult);
   const setReviewProgress = useReviewStore(state => state.setReviewProgress);
@@ -29,8 +27,8 @@ export default function Home() {
   };
 
   const handleStartReview = async () => {
-    if (!document || !apiKey) {
-      setError('请先上传文档并输入 API Key');
+    if (!document) {
+      setError('请先上传文档');
       return;
     }
 
@@ -38,18 +36,21 @@ export default function Home() {
     setIsReviewing(true);
 
     try {
-      const result = await reviewPRD(
+      const result = await reviewPRDWithGemini(
         document,
-        apiKey,
         (current, total) => setReviewProgress({ current, total })
       );
+
+      if (result.reviews.length === 0) {
+        throw new Error('所有评委评审失败，请重试');
+      }
 
       setReviewResult(result);
       setReviewProgress(null);
       router.push('/review');
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : '评审失败');
+      setError(err instanceof Error ? err.message : '评审失败，请重试');
       setReviewProgress(null);
     } finally {
       setIsReviewing(false);
@@ -117,7 +118,18 @@ export default function Home() {
               </div>
             </div>
 
-            <APIKeyInput />
+            {/* 免费提示 */}
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6 mb-6 border-2 border-green-200">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <span className="text-2xl">🎉</span>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  完全免费，由 Google Gemini 提供支持
+                </h3>
+              </div>
+              <p className="text-center text-sm text-gray-600">
+                无需注册、无需登录、无需付费 · 6 位 AI 评委即将开始工作
+              </p>
+            </div>
 
             {isReviewing ? (
               <ReviewProgress />
@@ -125,11 +137,13 @@ export default function Home() {
               <div className="mt-8 text-center">
                 <button
                   onClick={handleStartReview}
-                  disabled={!apiKey}
-                  className="bg-blue-600 text-white px-12 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl"
                 >
-                  🚀 开始评审
+                  🚀 开始免费评审
                 </button>
+                <p className="text-xs text-gray-500 mt-3">
+                  评审过程约需 1-2 分钟，请耐心等待
+                </p>
               </div>
             )}
 
