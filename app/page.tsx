@@ -51,36 +51,57 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F7F8FA]">
+    <main className="min-h-screen bg-[#FAFAFB]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <span className="font-semibold text-gray-900 text-[15px]">PRD 智能评审</span>
-          <span className="text-xs text-gray-400">由 Google Gemini AI 驱动</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-primary-500 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+              </svg>
+            </div>
+            <span className="font-bold text-gray-900 text-[15px] tracking-tight">PRD Review</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-gray-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot" />
+            <span>Gemini AI</span>
+          </div>
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="max-w-5xl mx-auto px-6 pt-12 pb-16">
         {/* Hero */}
-        <div className="animate-fade-up mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">
-            上传 PRD，获得 6 位专家评审
+        <div className="animate-fade-up mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-50 rounded-full text-xs font-medium text-primary-600 mb-5">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            </svg>
+            6 位 AI 专家，多维度评审
+          </div>
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-4 leading-[1.15]">
+            上传你的 PRD，<br />
+            <span className="text-gradient">获得专业级评审反馈</span>
           </h1>
-          <p className="text-gray-500 text-[15px] leading-relaxed max-w-lg">
-            AI 分别扮演运营、品牌、技术、产品、交互、BI 六位团队 Leader，从各自专业视角对你的产品需求文档进行深度评审，精准定位到每个段落。
+          <p className="text-gray-500 text-base leading-relaxed max-w-xl">
+            AI 分别扮演运营、品牌、技术、产品、交互、BI 六位团队 Leader，
+            从各自专业视角深度评审你的产品需求文档。
           </p>
         </div>
 
         {/* Reviewer cards */}
-        <div className="grid grid-cols-3 gap-3 mb-10 stagger">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-12 stagger">
           {REVIEWERS.map(reviewer => (
             <div
               key={reviewer.id}
-              className="bg-white rounded-xl p-4 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all duration-200"
+              className="card-lift bg-white rounded-xl p-4 border border-gray-100"
             >
-              <div className="flex items-center gap-3 mb-2">
-                <ReviewerAvatar reviewerId={reviewer.id} size={36} />
-                <span className="font-medium text-gray-800 text-sm">{reviewer.name}</span>
+              <div className="flex items-center gap-3 mb-2.5">
+                <ReviewerAvatar reviewerId={reviewer.id} size={38} />
+                <div>
+                  <span className="font-semibold text-gray-800 text-[13px] block">{reviewer.name.split('·')[0].trim()}</span>
+                  <span className="text-[11px] text-gray-400">{reviewer.name.split('·')[1]?.trim()}</span>
+                </div>
               </div>
               <p className="text-xs text-gray-400 leading-relaxed">{reviewer.description}</p>
             </div>
@@ -89,40 +110,38 @@ export default function Home() {
 
         {!document ? (
           <div className="animate-fade-up" style={{ animationDelay: '0.15s' }}>
-            {/* Action area */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
-              <div className="flex gap-8">
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+              <div className="flex">
                 {/* Left: Upload */}
-                <div className="flex-1">
-                  <h2 className="font-semibold text-gray-800 mb-1 text-[15px]">上传你的 PRD</h2>
+                <div className="flex-1 p-8">
+                  <h2 className="font-bold text-gray-800 mb-1 text-[15px]">上传你的 PRD</h2>
                   <p className="text-sm text-gray-400 mb-5">支持 PDF、Word、Markdown、纯文本</p>
                   <DocumentUploader />
                 </div>
 
                 {/* Divider */}
-                <div className="flex flex-col items-center gap-3 py-4">
+                <div className="flex flex-col items-center py-8">
                   <div className="w-px flex-1 bg-gray-100" />
-                  <span className="text-xs text-gray-300 bg-white px-1">或</span>
+                  <span className="text-[11px] text-gray-300 py-3 font-medium">OR</span>
                   <div className="w-px flex-1 bg-gray-100" />
                 </div>
 
                 {/* Right: Demo */}
-                <div className="w-56 flex flex-col justify-center items-center text-center">
+                <div className="w-52 flex flex-col justify-center items-center text-center p-8">
                   <p className="text-sm text-gray-500 mb-4">先看看效果？</p>
                   <button
                     onClick={handleDemoReview}
-                    className="px-5 py-2 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-100 transition-colors"
+                    className="w-full py-2.5 bg-primary-50 text-primary-600 rounded-xl text-sm font-semibold hover:bg-primary-100 active:scale-[0.98] transition-all"
                   >
                     体验 Demo
                   </button>
-                  <p className="text-xs text-gray-300 mt-2">预生成结果，无需等待</p>
+                  <p className="text-[11px] text-gray-300 mt-2.5">预生成结果，无需等待</p>
                 </div>
               </div>
             </div>
           </div>
         ) : (
           <div className="animate-fade-up space-y-4">
-            {/* File ready */}
             <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
@@ -132,7 +151,7 @@ export default function Home() {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-800 text-sm">{document.fileName}</p>
+                    <p className="font-semibold text-gray-800 text-sm">{document.fileName}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{document.paragraphs.length} 个段落 · 准备就绪</p>
                   </div>
                 </div>
@@ -149,7 +168,7 @@ export default function Home() {
               ) : (
                 <button
                   onClick={handleStartReview}
-                  className="w-full py-3 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm shadow-indigo-200"
+                  className="w-full py-3 bg-primary-500 text-white rounded-xl text-sm font-semibold hover:bg-primary-600 active:bg-primary-700 active:scale-[0.99] transition-all shadow-sm shadow-primary-200"
                 >
                   开始评审（约 1-2 分钟）
                 </button>
