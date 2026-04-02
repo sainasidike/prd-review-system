@@ -15,36 +15,43 @@ AI 驱动的产品需求文档（PRD）多角度评审工具
 
 ## ✨ 核心功能
 
+- ✨ **无需 API Key，立即体验** - 点击"体验 Demo"查看预生成的评审示例
 - 📄 支持 PDF、Word、Markdown、纯文本格式
-- 🤖 6 位 AI 评委多角度评审
+- 🤖 6 位 AI 评委多角度评审（运营/品牌/技术/产品/交互/BI）
 - 💬 精准定位到段落的评论和建议
 - 📊 双栏互动展示（PRD 内容 + 评委评论）
-- 🔑 用户自带 API Key，零服务器成本
+- 🔑 使用自己的 API Key，零服务器成本
 - ⚡ 静态部署，Vercel 一键部署
 
 ## 🚀 快速开始
 
-### 1. 安装依赖
+### 方式一：直接体验（无需 API Key）
 
-```bash
-npm install
-```
+1. 访问部署的网站或本地运行 `npm run dev`
+2. 点击 **"🚀 体验 Demo"** 按钮
+3. 立即查看预生成的 6 位评委评审结果
+4. 体验双栏互动、评委筛选、段落高亮等功能
 
-### 2. 启动开发服务器
+### 方式二：使用自己的 PRD（需要 API Key）
 
-```bash
-npm run dev
-```
+1. **安装依赖**
+   ```bash
+   npm install
+   ```
 
-访问 [http://localhost:3000](http://localhost:3000)
+2. **启动开发服务器**
+   ```bash
+   npm run dev
+   ```
 
-### 3. 获取 Claude API Key
+3. **获取 Claude API Key**
+   
+   在 [Anthropic Console](https://console.anthropic.com) 创建 API Key
 
-在 [Anthropic Console](https://console.anthropic.com) 创建 API Key
-
-### 4. 上传测试
-
-使用 `public/sample-prd.md` 进行测试
+4. **上传并评审**
+   - 上传你的 PRD 文档（PDF/Word/Markdown/TXT）
+   - 输入 API Key
+   - 点击"开始评审"，等待 AI 生成评审结果
 
 ## 📦 技术栈
 

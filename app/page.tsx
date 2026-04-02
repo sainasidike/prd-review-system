@@ -7,6 +7,7 @@ import APIKeyInput from '@/components/APIKeyInput';
 import ReviewProgress from '@/components/ReviewProgress';
 import { useReviewStore } from '@/stores/reviewStore';
 import { reviewPRD } from '@/lib/reviewer';
+import { DEMO_DOCUMENT, DEMO_REVIEW_RESULT } from '@/lib/demo-data';
 
 export default function Home() {
   const router = useRouter();
@@ -15,8 +16,17 @@ export default function Home() {
 
   const document = useReviewStore(state => state.document);
   const apiKey = useReviewStore(state => state.apiKey);
+  const setDocument = useReviewStore(state => state.setDocument);
   const setReviewResult = useReviewStore(state => state.setReviewResult);
   const setReviewProgress = useReviewStore(state => state.setReviewProgress);
+
+  const handleDemoReview = () => {
+    // 加载 Demo 数据
+    setDocument(DEMO_DOCUMENT);
+    setReviewResult(DEMO_REVIEW_RESULT);
+    // 直接跳转到评审结果页
+    router.push('/review');
+  };
 
   const handleStartReview = async () => {
     if (!document || !apiKey) {
@@ -51,13 +61,42 @@ export default function Home() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">PRD 智能评审系统</h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-8">
             上传 PRD 文档，AI 自动扮演 6 位团队 Leader 进行多角度评审
           </p>
+
+          {/* Demo 体验按钮 */}
+          {!document && (
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6 mb-8 border-2 border-purple-200">
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <span className="text-3xl">✨</span>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  无需 API Key，立即体验
+                </h2>
+              </div>
+              <p className="text-gray-600 mb-4 text-sm">
+                查看预生成的评审示例，了解 6 位 AI 评委如何从不同角度分析 PRD
+              </p>
+              <button
+                onClick={handleDemoReview}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl"
+              >
+                🚀 体验 Demo
+              </button>
+              <p className="text-xs text-gray-500 mt-3">
+                （Demo 使用预生成的评审结果，无需等待）
+              </p>
+            </div>
+          )}
         </div>
 
         {!document ? (
-          <DocumentUploader />
+          <>
+            <div className="text-center mb-4 text-gray-500 text-sm">
+              ──────  或上传自己的 PRD 文档  ──────
+            </div>
+            <DocumentUploader />
+          </>
         ) : (
           <>
             <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
